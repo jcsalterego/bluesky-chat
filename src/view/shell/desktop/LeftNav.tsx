@@ -37,21 +37,9 @@ import {
 import {Button, ButtonIcon, ButtonText} from '#/components/Button'
 import {type DialogControlProps} from '#/components/Dialog'
 import {ArrowBoxLeft_Stroke2_Corner0_Rounded as LeaveIcon} from '#/components/icons/ArrowBoxLeft'
-import {
-  Bookmark as BookmarkIcon,
-  BookmarkFilled as BookmarkFilledIcon,
-} from '#/components/icons/Bookmark'
-import {
-  BulletList_Filled_Corner0_Rounded as ListFilledIcon,
-  BulletList_Stroke2_Corner0_Rounded as ListIcon,
-} from '#/components/icons/BulletList'
 import {type Props as SVGIconProps} from '#/components/icons/common'
 import {DotGrid3x1_Stroke2_Corner0_Rounded as EllipsisIcon} from '#/components/icons/DotGrid'
 import {EditBig_Stroke2_Corner2_Rounded as EditBigIcon} from '#/components/icons/EditBig'
-import {
-  Hashtag_Filled_Corner0_Rounded as HashtagFilledIcon,
-  Hashtag_Stroke2_Corner0_Rounded as HashtagIcon,
-} from '#/components/icons/Hashtag'
 import {
   Message_Stroke2_Corner0_Rounded as MessageIcon,
   Message_Stroke2_Corner0_Rounded_Filled as MessageFilledIcon,
@@ -661,39 +649,6 @@ export function DesktopLeftNav({routeName}: {routeName: string}) {
             icons={{
               inactive: MessageIcon,
               active: MessageFilledIcon,
-            }}
-          />
-          <NavItem
-            label={l`Feeds`}
-            href="/feeds"
-            navItem="feeds"
-            minimal={leftNavMinimal}
-            icons={{
-              inactive: HashtagIcon,
-              active: HashtagFilledIcon,
-            }}
-          />
-          <NavItem
-            label={l`Lists`}
-            href="/lists"
-            navItem="lists"
-            minimal={leftNavMinimal}
-            icons={{
-              inactive: ListIcon,
-              active: ListFilledIcon,
-            }}
-          />
-          <NavItem
-            label={l({
-              message: 'Saved',
-              context: 'link to bookmarks screen',
-            })}
-            href="/saved"
-            navItem="saved"
-            minimal={leftNavMinimal}
-            icons={{
-              inactive: BookmarkIcon,
-              active: BookmarkFilledIcon,
             }}
           />
           <NavItem

@@ -33,12 +33,6 @@ import {Button, ButtonIcon, ButtonText} from '#/components/Button'
 import {useDialogControl} from '#/components/Dialog'
 import {Divider} from '#/components/Divider'
 import {ArrowShareRight_Stroke2_Corner2_Rounded as ArrowShareRight} from '#/components/icons/ArrowShareRight'
-import {Bookmark, BookmarkFilled} from '#/components/icons/Bookmark'
-import {BulletList_Stroke2_Corner0_Rounded as List} from '#/components/icons/BulletList'
-import {
-  Hashtag_Filled_Corner0_Rounded as HashtagFilled,
-  Hashtag_Stroke2_Corner0_Rounded as Hashtag,
-} from '#/components/icons/Hashtag'
 import {
   Message_Stroke2_Corner0_Rounded as Message,
   Message_Stroke2_Corner0_Rounded_Filled as MessageFilled,
@@ -173,8 +167,7 @@ let DrawerContent = ({}: React.PropsWithoutRef<{}>): React.ReactNode => {
   const setDrawerOpen = useSetDrawerOpen()
   const navigation = useNavigation<NavigationProp>()
   const ax = useAnalytics()
-  const {isAtFeeds, isAtBookmarks, isAtMyProfile, isAtMessages} =
-    useNavigationTabState()
+  const {isAtMyProfile, isAtMessages} = useNavigationTabState()
   const {hasSession, currentAccount} = useSession()
   const inviteFriendsControl = useDialogControl()
 
@@ -239,24 +232,6 @@ let DrawerContent = ({}: React.PropsWithoutRef<{}>): React.ReactNode => {
     onPressTab('MyProfile', 'drawerHeader')
   }, [onPressTab])
 
-  const onPressMyFeeds = useCallback(() => {
-    ax.metric('nav:click', {item: 'feeds', surface: 'drawer'})
-    navigation.navigate('Feeds')
-    setDrawerOpen(false)
-  }, [navigation, setDrawerOpen, ax])
-
-  const onPressLists = useCallback(() => {
-    ax.metric('nav:click', {item: 'lists', surface: 'drawer'})
-    navigation.navigate('Lists')
-    setDrawerOpen(false)
-  }, [navigation, setDrawerOpen, ax])
-
-  const onPressBookmarks = useCallback(() => {
-    ax.metric('nav:click', {item: 'saved', surface: 'drawer'})
-    navigation.navigate('Bookmarks')
-    setDrawerOpen(false)
-  }, [navigation, setDrawerOpen, ax])
-
   const onPressSettings = useCallback(() => {
     ax.metric('nav:click', {item: 'settings', surface: 'drawer'})
     navigation.navigate('Settings')
@@ -320,23 +295,13 @@ let DrawerContent = ({}: React.PropsWithoutRef<{}>): React.ReactNode => {
         {hasSession ? (
           <>
             <ChatMenuItem isActive={isAtMessages} onPress={onPressMessages} />
-            <FeedsMenuItem isActive={isAtFeeds} onPress={onPressMyFeeds} />
-            <ListsMenuItem onPress={onPressLists} />
-            <BookmarksMenuItem
-              isActive={isAtBookmarks}
-              onPress={onPressBookmarks}
-            />
             <ProfileMenuItem
               isActive={isAtMyProfile}
               onPress={onPressProfile}
             />
             <SettingsMenuItem onPress={onPressSettings} />
           </>
-        ) : (
-          <>
-            <FeedsMenuItem isActive={isAtFeeds} onPress={onPressMyFeeds} />
-          </>
-        )}
+        ) : null}
 
         <View style={[a.px_xl]}>
           <Divider style={[a.mb_xl, a.mt_sm]} />
@@ -440,72 +405,6 @@ let ChatMenuItem = ({
   )
 }
 ChatMenuItem = memo(ChatMenuItem)
-
-let FeedsMenuItem = ({
-  isActive,
-  onPress,
-}: {
-  isActive: boolean
-  onPress: () => void
-}): React.ReactNode => {
-  const {_} = useLingui()
-  const t = useTheme()
-  return (
-    <MenuItem
-      icon={
-        isActive ? (
-          <HashtagFilled width={iconWidth} style={[t.atoms.text]} />
-        ) : (
-          <Hashtag width={iconWidth} style={[t.atoms.text]} />
-        )
-      }
-      label={_(msg`Feeds`)}
-      bold={isActive}
-      onPress={onPress}
-    />
-  )
-}
-FeedsMenuItem = memo(FeedsMenuItem)
-
-let ListsMenuItem = ({onPress}: {onPress: () => void}): React.ReactNode => {
-  const {_} = useLingui()
-  const t = useTheme()
-
-  return (
-    <MenuItem
-      icon={<List style={[t.atoms.text]} width={iconWidth} />}
-      label={_(msg`Lists`)}
-      onPress={onPress}
-    />
-  )
-}
-ListsMenuItem = memo(ListsMenuItem)
-
-let BookmarksMenuItem = ({
-  isActive,
-  onPress,
-}: {
-  isActive: boolean
-  onPress: () => void
-}): React.ReactNode => {
-  const {_} = useLingui()
-  const t = useTheme()
-
-  return (
-    <MenuItem
-      icon={
-        isActive ? (
-          <BookmarkFilled style={[t.atoms.text]} width={iconWidth} />
-        ) : (
-          <Bookmark style={[t.atoms.text]} width={iconWidth} />
-        )
-      }
-      label={_(msg({message: 'Saved', context: 'link to bookmarks screen'}))}
-      onPress={onPress}
-    />
-  )
-}
-BookmarksMenuItem = memo(BookmarksMenuItem)
 
 let ProfileMenuItem = ({
   isActive,
