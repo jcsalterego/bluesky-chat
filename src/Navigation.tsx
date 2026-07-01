@@ -593,7 +593,7 @@ function TabsNavigator({
 
   return (
     <Tab.Navigator
-      initialRouteName="HomeTab"
+      initialRouteName="MessagesTab"
       backBehavior="initialRoute"
       screenOptions={{headerShown: false, lazy: true}}
       tabBar={tabBar}
@@ -791,23 +791,28 @@ const LINKING = {
     // build the path
     const route = router.matchName(node.name)
     if (typeof route === 'undefined') {
-      return '/' // default to home
+      return '/messages'
     }
     return route.build((node.params || {}) as RouteParams)
   },
 
   getStateFromPath(path: string) {
     const [name, params] = router.matchPath(path)
+    const pathname = new URL(path, 'http://throwaway.com').pathname
 
     // Any time we receive a url that starts with `intent/` we want to ignore it here. It will be handled in the
     // intent handler hook. We should check for the trailing slash, because if there isn't one then it isn't a valid
     // intent
-    // On web, there is no route state that's created by default, so we should initialize it as the home route. On
-    // native, since the home tab and the home screen are defined as initial routes, we don't need to return a state
+    // On web, there is no route state that's created by default, so we should initialize it as the default route. On
+    // native, since the default tab and its root screen are defined as initial routes, we don't need to return a state
     // since it will be created by react-navigation.
     if (path.includes('intent/')) {
       if (IS_NATIVE) return
-      return buildStateObject('Flat', 'Home', params)
+      return buildStateObject('Flat', 'Messages', params)
+    }
+
+    if (name === 'Home' && pathname === '/') {
+      return buildStateObject(IS_NATIVE ? 'MessagesTab' : 'Flat', 'Messages', {})
     }
 
     // Chat invite URLs (`/chat/:code`) are handled by `useIntentHandler`, which
@@ -1091,7 +1096,7 @@ function reset(): Promise<void> {
     navigationRef.dispatch(
       CommonActions.reset({
         index: 0,
-        routes: [{name: IS_NATIVE ? 'HomeTab' : 'Home'}],
+        routes: [{name: IS_NATIVE ? 'MessagesTab' : 'Messages'}],
       }),
     )
     return Promise.race([
