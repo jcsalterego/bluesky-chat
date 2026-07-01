@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native'
 import {useSafeAreaInsets} from 'react-native-safe-area-context'
-import {msg, plural} from '@lingui/core/macro'
+import {msg} from '@lingui/core/macro'
 import {useLingui} from '@lingui/react'
 import {Plural, Trans} from '@lingui/react/macro'
 import {StackActions, useNavigation} from '@react-navigation/native'
@@ -22,7 +22,6 @@ import {sanitizeHandle} from '#/lib/strings/handles'
 import {colors} from '#/lib/styles'
 import {emitSoftReset} from '#/state/events'
 import {useKawaiiMode} from '#/state/preferences/kawaii'
-import {useUnreadNotifications} from '#/state/queries/notifications/unread'
 import {useProfileQuery} from '#/state/queries/profile'
 import {type SessionAccount, useSession} from '#/state/session'
 import {useSetDrawerOpen} from '#/state/shell'
@@ -34,24 +33,12 @@ import {Button, ButtonIcon, ButtonText} from '#/components/Button'
 import {useDialogControl} from '#/components/Dialog'
 import {Divider} from '#/components/Divider'
 import {ArrowShareRight_Stroke2_Corner2_Rounded as ArrowShareRight} from '#/components/icons/ArrowShareRight'
-import {
-  Bell_Filled_Corner0_Rounded as BellFilled,
-  Bell_Stroke2_Corner0_Rounded as Bell,
-} from '#/components/icons/Bell'
 import {Bookmark, BookmarkFilled} from '#/components/icons/Bookmark'
 import {BulletList_Stroke2_Corner0_Rounded as List} from '#/components/icons/BulletList'
 import {
   Hashtag_Filled_Corner0_Rounded as HashtagFilled,
   Hashtag_Stroke2_Corner0_Rounded as Hashtag,
 } from '#/components/icons/Hashtag'
-import {
-  HomeOpen_Filled_Corner0_Rounded as HomeFilled,
-  HomeOpen_Stoke2_Corner0_Rounded as Home,
-} from '#/components/icons/HomeOpen'
-import {
-  MagnifyingGlass_Filled_Stroke2_Corner0_Rounded as MagnifyingGlassFilled,
-  MagnifyingGlass_Stroke2_Corner0_Rounded as MagnifyingGlass,
-} from '#/components/icons/MagnifyingGlass'
 import {
   Message_Stroke2_Corner0_Rounded as Message,
   Message_Stroke2_Corner0_Rounded_Filled as MessageFilled,
@@ -186,15 +173,8 @@ let DrawerContent = ({}: React.PropsWithoutRef<{}>): React.ReactNode => {
   const setDrawerOpen = useSetDrawerOpen()
   const navigation = useNavigation<NavigationProp>()
   const ax = useAnalytics()
-  const {
-    isAtHome,
-    isAtSearch,
-    isAtFeeds,
-    isAtBookmarks,
-    isAtNotifications,
-    isAtMyProfile,
-    isAtMessages,
-  } = useNavigationTabState()
+  const {isAtFeeds, isAtBookmarks, isAtMyProfile, isAtMessages} =
+    useNavigationTabState()
   const {hasSession, currentAccount} = useSession()
   const inviteFriendsControl = useDialogControl()
 
@@ -246,17 +226,8 @@ let DrawerContent = ({}: React.PropsWithoutRef<{}>): React.ReactNode => {
     [navigation, setDrawerOpen, currentAccount, ax],
   )
 
-  const onPressHome = useCallback(() => onPressTab('Home'), [onPressTab])
-
-  const onPressSearch = useCallback(() => onPressTab('Search'), [onPressTab])
-
   const onPressMessages = useCallback(
     () => onPressTab('Messages'),
-    [onPressTab],
-  )
-
-  const onPressNotifications = useCallback(
-    () => onPressTab('Notifications'),
     [onPressTab],
   )
 
@@ -348,13 +319,7 @@ let DrawerContent = ({}: React.PropsWithoutRef<{}>): React.ReactNode => {
 
         {hasSession ? (
           <>
-            <SearchMenuItem isActive={isAtSearch} onPress={onPressSearch} />
-            <HomeMenuItem isActive={isAtHome} onPress={onPressHome} />
             <ChatMenuItem isActive={isAtMessages} onPress={onPressMessages} />
-            <NotificationsMenuItem
-              isActive={isAtNotifications}
-              onPress={onPressNotifications}
-            />
             <FeedsMenuItem isActive={isAtFeeds} onPress={onPressMyFeeds} />
             <ListsMenuItem onPress={onPressLists} />
             <BookmarksMenuItem
@@ -369,9 +334,7 @@ let DrawerContent = ({}: React.PropsWithoutRef<{}>): React.ReactNode => {
           </>
         ) : (
           <>
-            <HomeMenuItem isActive={isAtHome} onPress={onPressHome} />
             <FeedsMenuItem isActive={isAtFeeds} onPress={onPressMyFeeds} />
-            <SearchMenuItem isActive={isAtSearch} onPress={onPressSearch} />
           </>
         )}
 
@@ -452,58 +415,6 @@ interface MenuItemProps extends ComponentProps<typeof PressableScale> {
   bold?: boolean
 }
 
-let SearchMenuItem = ({
-  isActive,
-  onPress,
-}: {
-  isActive: boolean
-  onPress: () => void
-}): React.ReactNode => {
-  const {_} = useLingui()
-  const t = useTheme()
-  return (
-    <MenuItem
-      icon={
-        isActive ? (
-          <MagnifyingGlassFilled style={[t.atoms.text]} width={iconWidth} />
-        ) : (
-          <MagnifyingGlass style={[t.atoms.text]} width={iconWidth} />
-        )
-      }
-      label={_(msg`Explore`)}
-      bold={isActive}
-      onPress={onPress}
-    />
-  )
-}
-SearchMenuItem = memo(SearchMenuItem)
-
-let HomeMenuItem = ({
-  isActive,
-  onPress,
-}: {
-  isActive: boolean
-  onPress: () => void
-}): React.ReactNode => {
-  const {_} = useLingui()
-  const t = useTheme()
-  return (
-    <MenuItem
-      icon={
-        isActive ? (
-          <HomeFilled style={[t.atoms.text]} width={iconWidth} />
-        ) : (
-          <Home style={[t.atoms.text]} width={iconWidth} />
-        )
-      }
-      label={_(msg`Home`)}
-      bold={isActive}
-      onPress={onPress}
-    />
-  )
-}
-HomeMenuItem = memo(HomeMenuItem)
-
 let ChatMenuItem = ({
   isActive,
   onPress,
@@ -529,44 +440,6 @@ let ChatMenuItem = ({
   )
 }
 ChatMenuItem = memo(ChatMenuItem)
-
-let NotificationsMenuItem = ({
-  isActive,
-  onPress,
-}: {
-  isActive: boolean
-  onPress: () => void
-}): React.ReactNode => {
-  const {_} = useLingui()
-  const t = useTheme()
-  const numUnreadNotifications = useUnreadNotifications()
-  return (
-    <MenuItem
-      icon={
-        isActive ? (
-          <BellFilled style={[t.atoms.text]} width={iconWidth} />
-        ) : (
-          <Bell style={[t.atoms.text]} width={iconWidth} />
-        )
-      }
-      label={_(msg`Notifications`)}
-      accessibilityHint={
-        numUnreadNotifications === ''
-          ? ''
-          : _(
-              plural(numUnreadNotifications ?? 0, {
-                one: '# unread item',
-                other: '# unread items',
-              }),
-            )
-      }
-      count={numUnreadNotifications}
-      bold={isActive}
-      onPress={onPress}
-    />
-  )
-}
-NotificationsMenuItem = memo(NotificationsMenuItem)
 
 let FeedsMenuItem = ({
   isActive,

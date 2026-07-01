@@ -18,7 +18,6 @@ import {isInvalidHandle, sanitizeHandle} from '#/lib/strings/handles'
 import {emitSoftReset} from '#/state/events'
 import {useFetchHandle} from '#/state/queries/handle'
 import {useUnreadMessageCount} from '#/state/queries/messages/list-conversations'
-import {useUnreadNotifications} from '#/state/queries/notifications/unread'
 import {useProfilesQuery} from '#/state/queries/profile'
 import {type SessionAccount, useSession, useSessionApi} from '#/state/session'
 import {useLoggedOutViewControls} from '#/state/shell/logged-out'
@@ -39,10 +38,6 @@ import {Button, ButtonIcon, ButtonText} from '#/components/Button'
 import {type DialogControlProps} from '#/components/Dialog'
 import {ArrowBoxLeft_Stroke2_Corner0_Rounded as LeaveIcon} from '#/components/icons/ArrowBoxLeft'
 import {
-  Bell_Filled_Corner0_Rounded as BellFilledIcon,
-  Bell_Stroke2_Corner0_Rounded as BellIcon,
-} from '#/components/icons/Bell'
-import {
   Bookmark as BookmarkIcon,
   BookmarkFilled as BookmarkFilledIcon,
 } from '#/components/icons/Bookmark'
@@ -57,14 +52,6 @@ import {
   Hashtag_Filled_Corner0_Rounded as HashtagFilledIcon,
   Hashtag_Stroke2_Corner0_Rounded as HashtagIcon,
 } from '#/components/icons/Hashtag'
-import {
-  HomeOpen_Filled_Corner0_Rounded as HomeFilledIcon,
-  HomeOpen_Stoke2_Corner0_Rounded as HomeIcon,
-} from '#/components/icons/HomeOpen'
-import {
-  MagnifyingGlass_Filled_Stroke2_Corner0_Rounded as MagnifyingGlassFilledIcon,
-  MagnifyingGlass_Stroke2_Corner0_Rounded as MagnifyingGlassIcon,
-} from '#/components/icons/MagnifyingGlass'
 import {
   Message_Stroke2_Corner0_Rounded as MessageIcon,
   Message_Stroke2_Corner0_Rounded_Filled as MessageFilledIcon,
@@ -615,7 +602,6 @@ export function DesktopLeftNav({routeName}: {routeName: string}) {
     routeName.startsWith('Messages') && aa.state.access === aa.Access.Full
   const {leftNavMinimal: leftNavMinimalBreakpoint, centerColumnOffset} =
     useLayoutBreakpoints()
-  const numUnreadNotifications = useUnreadNotifications()
   const numUnreadMessages = useUnreadMessageCount()
 
   const leftNavMinimal = isMessagesRelatedScreen || leftNavMinimalBreakpoint
@@ -663,37 +649,6 @@ export function DesktopLeftNav({routeName}: {routeName: string}) {
       ) : null}
       {hasSession && (
         <>
-          <NavItem
-            label={l`Home`}
-            href="/"
-            navItem="home"
-            minimal={leftNavMinimal}
-            icons={{
-              inactive: HomeIcon,
-              active: HomeFilledIcon,
-            }}
-          />
-          <NavItem
-            label={l`Explore`}
-            href="/search"
-            navItem="search"
-            minimal={leftNavMinimal}
-            icons={{
-              inactive: MagnifyingGlassIcon,
-              active: MagnifyingGlassFilledIcon,
-            }}
-          />
-          <NavItem
-            label={l`Notifications`}
-            href="/notifications"
-            navItem="notifications"
-            minimal={leftNavMinimal}
-            count={numUnreadNotifications}
-            icons={{
-              inactive: BellIcon,
-              active: BellFilledIcon,
-            }}
-          />
           <NavItem
             label={l`Chat`}
             href="/messages"

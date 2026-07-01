@@ -12,7 +12,6 @@ import {getCurrentRoute, isTab} from '#/lib/routes/helpers'
 import {makeProfileLink} from '#/lib/routes/links'
 import {type CommonNavigatorParams} from '#/lib/routes/types'
 import {useUnreadMessageCount} from '#/state/queries/messages/list-conversations'
-import {useUnreadNotifications} from '#/state/queries/notifications/unread'
 import {useProfileQuery} from '#/state/queries/profile'
 import {useSession} from '#/state/session'
 import {useLoggedOutViewControls} from '#/state/shell/logged-out'
@@ -27,18 +26,6 @@ import {Button, ButtonText} from '#/components/Button'
 import {useDialogControl} from '#/components/Dialog'
 import {SwitchAccountDialog} from '#/components/dialogs/SwitchAccount'
 import {
-  Bell_Filled_Corner0_Rounded as BellFilled,
-  Bell_Stroke2_Corner0_Rounded as Bell,
-} from '#/components/icons/Bell'
-import {
-  HomeOpen_Filled_Corner0_Rounded as HomeFilled,
-  HomeOpen_Stoke2_Corner0_Rounded as Home,
-} from '#/components/icons/HomeOpen'
-import {
-  MagnifyingGlass_Filled_Stroke2_Corner0_Rounded as MagnifyingGlassFilled,
-  MagnifyingGlass_Stroke2_Corner0_Rounded as MagnifyingGlass,
-} from '#/components/icons/MagnifyingGlass'
-import {
   Message_Stroke2_Corner0_Rounded as Message,
   Message_Stroke2_Corner0_Rounded_Filled as MessageFilled,
 } from '#/components/icons/Message'
@@ -47,7 +34,7 @@ import {useAgeAssurance} from '#/ageAssurance'
 import {useAnalytics} from '#/analytics'
 import {styles} from './BottomBarStyles'
 
-type NavItemValue = 'home' | 'search' | 'chat' | 'notifications' | 'profile'
+type NavItemValue = 'chat' | 'profile'
 
 export function BottomBarWeb() {
   const {_} = useLingui()
@@ -63,7 +50,6 @@ export function BottomBarWeb() {
   const iconWidth = 26
 
   const unreadMessageCount = useUnreadMessageCount()
-  const notificationCountStr = useUnreadNotifications()
   const aa = useAgeAssurance()
   const isLabeler = profile?.associated?.labeler
 
@@ -100,31 +86,6 @@ export function BottomBarWeb() {
         onLayout={event => footerHeight.set(event.nativeEvent.layout.height)}>
         {hasSession ? (
           <>
-            <NavItem routeName="Home" href="/" navItem="home">
-              {({isActive}) => {
-                const Icon = isActive ? HomeFilled : Home
-                return (
-                  <Icon
-                    aria-hidden={true}
-                    width={iconWidth + 1}
-                    style={[styles.ctrlIcon, t.atoms.text, styles.homeIcon]}
-                  />
-                )
-              }}
-            </NavItem>
-            <NavItem routeName="Search" href="/search" navItem="search">
-              {({isActive}) => {
-                const Icon = isActive ? MagnifyingGlassFilled : MagnifyingGlass
-                return (
-                  <Icon
-                    aria-hidden={true}
-                    width={iconWidth + 2}
-                    style={[styles.ctrlIcon, t.atoms.text, styles.searchIcon]}
-                  />
-                )
-              }}
-            </NavItem>
-
             {hasSession && (
               <>
                 <NavItem
@@ -150,22 +111,6 @@ export function BottomBarWeb() {
                           t.atoms.text,
                           styles.messagesIcon,
                         ]}
-                      />
-                    )
-                  }}
-                </NavItem>
-                <NavItem
-                  routeName="Notifications"
-                  href="/notifications"
-                  navItem="notifications"
-                  notificationCount={notificationCountStr}>
-                  {({isActive}) => {
-                    const Icon = isActive ? BellFilled : Bell
-                    return (
-                      <Icon
-                        aria-hidden={true}
-                        width={iconWidth}
-                        style={[styles.ctrlIcon, t.atoms.text, styles.bellIcon]}
                       />
                     )
                   }}

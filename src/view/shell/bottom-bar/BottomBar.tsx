@@ -20,7 +20,6 @@ import {type SharedNavTab, TAB_TO_NAV_ITEM} from '#/lib/routes/tab-to-nav-item'
 import {emitSoftReset} from '#/state/events'
 import {useUnreadMessageCount} from '#/state/queries/messages/list-conversations'
 import {useUpdateAllRead} from '#/state/queries/messages/update-all-read'
-import {useUnreadNotifications} from '#/state/queries/notifications/unread'
 import {useProfileQuery} from '#/state/queries/profile'
 import {useSession} from '#/state/session'
 import {useLoggedOutViewControls} from '#/state/shell/logged-out'
@@ -33,20 +32,8 @@ import {atoms as a, useTheme} from '#/alf'
 import {Button, ButtonText} from '#/components/Button'
 import {useDialogControl} from '#/components/Dialog'
 import {SwitchAccountDialog} from '#/components/dialogs/SwitchAccount'
-import {
-  Bell_Filled_Corner0_Rounded as BellFilled,
-  Bell_Stroke2_Corner0_Rounded as Bell,
-} from '#/components/icons/Bell'
 import {CircleCheck_Stroke2_Corner0_Rounded as CircleCheckIcon} from '#/components/icons/CircleCheck'
-import {
-  HomeOpen_Filled_Corner0_Rounded as HomeFilled,
-  HomeOpen_Stoke2_Corner0_Rounded as Home,
-} from '#/components/icons/HomeOpen'
 import {Inbox_Stroke2_Corner2_Rounded as InboxIcon} from '#/components/icons/Inbox'
-import {
-  MagnifyingGlass_Filled_Stroke2_Corner0_Rounded as MagnifyingGlassFilled,
-  MagnifyingGlass_Stroke2_Corner0_Rounded as MagnifyingGlass,
-} from '#/components/icons/MagnifyingGlass'
 import {
   Message_Stroke2_Corner0_Rounded as Message,
   Message_Stroke2_Corner0_Rounded_Filled as MessageFilled,
@@ -67,9 +54,7 @@ export function BottomBar({navigation}: BottomTabBarProps) {
   const ax = useAnalytics()
   const safeAreaInsets = useSafeAreaInsets()
   const {footerHeight} = useShellLayout()
-  const {isAtHome, isAtSearch, isAtNotifications, isAtMyProfile, isAtMessages} =
-    useNavigationTabState()
-  const numUnreadNotifications = useUnreadNotifications()
+  const {isAtMyProfile, isAtMessages} = useNavigationTabState()
   const numUnreadMessages = useUnreadMessageCount()
   const aa = useAgeAssurance()
   const footerMinimalShellTransform = useMinimalShellFooterTransform()
@@ -129,12 +114,6 @@ export function BottomBar({navigation}: BottomTabBarProps) {
     },
     [navigation, dedupe, ax],
   )
-  const onPressHome = useCallback(() => onPressTab('Home'), [onPressTab])
-  const onPressSearch = useCallback(() => onPressTab('Search'), [onPressTab])
-  const onPressNotifications = useCallback(
-    () => onPressTab('Notifications'),
-    [onPressTab],
-  )
   const onPressProfile = useCallback(() => {
     onPressTab('MyProfile')
   }, [onPressTab])
@@ -177,46 +156,6 @@ export function BottomBar({navigation}: BottomTabBarProps) {
         {hasSession ? (
           <>
             <Btn
-              testID="bottomBarHomeBtn"
-              icon={
-                isAtHome ? (
-                  <HomeFilled
-                    width={iconWidth + 1}
-                    style={[styles.ctrlIcon, t.atoms.text, styles.homeIcon]}
-                  />
-                ) : (
-                  <Home
-                    width={iconWidth + 1}
-                    style={[styles.ctrlIcon, t.atoms.text, styles.homeIcon]}
-                  />
-                )
-              }
-              onPress={onPressHome}
-              accessibilityRole="tab"
-              accessibilityLabel={l`Home`}
-              accessibilityHint=""
-            />
-            <Btn
-              icon={
-                isAtSearch ? (
-                  <MagnifyingGlassFilled
-                    width={iconWidth + 2}
-                    style={[styles.ctrlIcon, t.atoms.text, styles.searchIcon]}
-                  />
-                ) : (
-                  <MagnifyingGlass
-                    testID="bottomBarSearchBtn"
-                    width={iconWidth + 2}
-                    style={[styles.ctrlIcon, t.atoms.text, styles.searchIcon]}
-                  />
-                )
-              }
-              onPress={onPressSearch}
-              accessibilityRole="search"
-              accessibilityLabel={l`Search`}
-              accessibilityHint=""
-            />
-            <Btn
               testID="bottomBarMessagesBtn"
               icon={
                 isAtMessages ? (
@@ -255,37 +194,6 @@ export function BottomBar({navigation}: BottomTabBarProps) {
                         }),
                       })
                   : ''
-              }
-            />
-            <Btn
-              testID="bottomBarNotificationsBtn"
-              icon={
-                isAtNotifications ? (
-                  <BellFilled
-                    width={iconWidth}
-                    style={[styles.ctrlIcon, t.atoms.text, styles.bellIcon]}
-                  />
-                ) : (
-                  <Bell
-                    width={iconWidth}
-                    style={[styles.ctrlIcon, t.atoms.text, styles.bellIcon]}
-                  />
-                )
-              }
-              onPress={onPressNotifications}
-              notificationCount={numUnreadNotifications}
-              accessible={true}
-              accessibilityRole="tab"
-              accessibilityLabel={l`Notifications`}
-              accessibilityHint={
-                numUnreadNotifications === ''
-                  ? ''
-                  : l({
-                      message: plural(numUnreadNotifications ?? 0, {
-                        one: '# unread item',
-                        other: '# unread items',
-                      }),
-                    })
               }
             />
             <Btn
