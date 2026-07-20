@@ -74,7 +74,7 @@ jobs:
           packager: 'pnpm --allow-build=dtrace-provider'
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - uses: actions/setup-java@ad2b38190b15e4d6bdf0c97fb4fca8412226d287 # v5.3.0
+      - uses: actions/setup-java@0f481fcb613427c0f801b606911222b5b6f3083a # v5.5.0
         with:
           distribution: "temurin"
           java-version: "17"
@@ -125,7 +125,7 @@ jobs:
 
       - name: 🔔 Notify Slack of Play Store Submission
         if: ${{ inputs.profile == 'production' }}
-        uses: slackapi/slack-github-action@45a88b9581bfab2566dc881e2cd66d334e621e2c # v3.0.3
+        uses: slackapi/slack-github-action@0d95c9a7becc1e6e297d76df9bc735c44f4cbcbc # v3.0.5
         with:
           webhook: ${{ secrets.SLACK_CLIENT_ALERT_WEBHOOK }}
           webhook-type: incoming-webhook
@@ -173,7 +173,7 @@ jobs:
           path: build.apk
 
       - name: 🔔 Notify Slack of APK Artifact
-        uses: slackapi/slack-github-action@45a88b9581bfab2566dc881e2cd66d334e621e2c # v3.0.3
+        uses: slackapi/slack-github-action@0d95c9a7becc1e6e297d76df9bc735c44f4cbcbc # v3.0.5
         with:
           webhook: ${{ secrets.SLACK_CLIENT_ALERT_WEBHOOK }}
           webhook-type: incoming-webhook
@@ -238,7 +238,7 @@ jobs:
       - name: 📎 Attach APK to GitHub Release
         id: attach
         if: ${{ steps.release-check.outputs.exists == 'true' }}
-        uses: softprops/action-gh-release@718ea10b132b3b2eba29c1007bb80653f286566b # v3.0.1
+        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
         with:
           tag_name: ${{ github.ref_name }}
           files: Bluesky-${{ needs.build.outputs.package-version }}.apk
@@ -246,7 +246,7 @@ jobs:
 
       - name: 🔔 Notify Slack of Release Attachment
         if: ${{ steps.release-check.outputs.exists == 'true' }}
-        uses: slackapi/slack-github-action@45a88b9581bfab2566dc881e2cd66d334e621e2c # v3.0.3
+        uses: slackapi/slack-github-action@0d95c9a7becc1e6e297d76df9bc735c44f4cbcbc # v3.0.5
         with:
           webhook: ${{ secrets.SLACK_CLIENT_ALERT_WEBHOOK }}
           webhook-type: incoming-webhook
