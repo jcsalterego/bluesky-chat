@@ -96,7 +96,7 @@
     "@atproto/api": "0.20.22",
     "@atproto/syntax": "0.6.3",
     "@bitdrift/react-native": "^0.6.8",
-    "@braintree/sanitize-url": "^6.0.2",
+    "@braintree/sanitize-url": "^7.1.2",
     "@bsky.app/alf": "^0.1.14",
     "@bsky.app/expo-dynamic-app-icon": "^1.8.5",
     "@bsky.app/expo-guess-language": "^0.2.8",
